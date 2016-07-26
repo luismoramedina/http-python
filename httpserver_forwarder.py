@@ -8,16 +8,13 @@ or -> python httpserver.py
 it forwards request to another server
 """
 
+import cgi
 import datetime
-import urllib
-import urllib.request
 import http.server
 import socketserver
-import logging
-import cgi
-
 import sys
-
+import urllib
+import urllib.request
 
 if len(sys.argv) > 2:
     PORT = int(sys.argv[2])
@@ -32,27 +29,27 @@ else:
 
 class ServerHandler(http.server.SimpleHTTPRequestHandler):
 
-    def do_GET(self):
-        print ("======= GET STARTED =======")
-        print (self.headers)
+    def do_get(self):
+        print("======= GET STARTED =======")
+        print(self.headers)
         http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-    def do_POST(self):
-        print ("======= POST STARTED =======")
-        print ("path: ", self.path)
+    def do_post(self):
+        print("======= POST STARTED =======")
+        print("path: ", self.path)
         
         if self.path.startswith('/Globales/XML'):
             replaced_path = self.path.replace('/Globales', '')
             new_path = 'http://localhost:9080/TESTWS_ENS' + replaced_path
-            print ("REDIRECTING!!! to ", new_path)
-            print (self.wfile)
-            print (self)
+            print("REDIRECTING!!! to ", new_path)
+            print(self.wfile)
+            print(self)
 
             form = cgi.FieldStorage(
                 fp=self.rfile,
                 headers=self.headers,
-                environ={'REQUEST_METHOD':'POST',
-                         'CONTENT_TYPE':self.headers['Content-Type'],
+                environ={'REQUEST_METHOD': 'POST',
+                         'CONTENT_TYPE': self.headers['Content-Type'],
                          })
 
             values = {}
@@ -62,15 +59,15 @@ class ServerHandler(http.server.SimpleHTTPRequestHandler):
                 value = str(form.getvalue(variable))
                 values[variable] = value
 
-            data =  urllib.parse.urlencode(values)
+            data = urllib.parse.urlencode(values)
             data = data.encode('utf-8') # data should be bytes
             #req = urllib.request.Request(new_path, data, self.headers)
             req = urllib.request.Request(new_path, data)
-            print (self.headers)
+            print(self.headers)
 
-            print ('Before contact to server: ' + str(datetime.datetime.now()))
+            print('Before contact to server: ' + str(datetime.datetime.now()))
             response = urllib.request.urlopen(req)
-            print ('After contact to server: ' + str(datetime.datetime.now()))
+            print('After contact to server: ' + str(datetime.datetime.now()))
             the_page = response.read()
             print('resp: ' + str(the_page))
             resp_headers = response.info()
@@ -90,5 +87,5 @@ Handler = ServerHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
-print ("Listening on", PORT)
+print("Listening on", PORT)
 httpd.serve_forever()

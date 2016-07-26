@@ -15,13 +15,15 @@ import socketserver
 
 class ServerHandler(http.server.SimpleHTTPRequestHandler):
 
-    def do_GET(self):
+    def do_get(self):
         logging.warning("======= GET STARTED =======")
         logging.warning(self.headers)
 
         self.send_response(401)
         self.send_header("Content-Type", "text/html;charset=utf-8")
-        self.send_header("WWW-Authenticate", 'Digest realm="My Digest Secure REST-WS", qop="auth", nonce="MTMxNzA1MDEwOTk0MTo0MmZhNWIyMjkzYWQwN2U3MGM2YjY1N2UzYTZhMWM3NA=="')
+        self.send_header("WWW-Authenticate",
+                         'Digest realm="My Digest Secure REST-WS", qop="auth", '
+                         'nonce="MTMxNzA1MDEwOTk0MTo0MmZhNWIyMjkzYWQwN2U3MGM2YjY1N2UzYTZhMWM3NA=="')
         self.end_headers()
 #        self.wfile.write("")
 

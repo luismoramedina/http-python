@@ -8,13 +8,11 @@ or -> python httpserver.py
 it logs headers and form data
 """
 
-import http.server
-import socketserver
-import logging
 import cgi
-
+import http.server
+import logging
+import socketserver
 import sys
-
 
 if len(sys.argv) > 2:
     PORT = int(sys.argv[2])
@@ -27,7 +25,7 @@ else:
     I = ""
 
 
-def logValues(form):
+def log_values(form):
     logging.warning("--  BEGIN VALUES")
     for item in form.list:
         logging.warning(item)
@@ -37,31 +35,32 @@ def logValues(form):
     logging.warning("\n")
 
 
-def logHeaders(headers):
+def log_headers(headers):
     logging.warning("-- BEGIN HEADERS")
     logging.warning(headers)
     logging.warning("END HEADERS --")
 
+
 class ServerHandler(http.server.SimpleHTTPRequestHandler):
 
-    def do_GET(self):
+    def do_get(self):
         logging.warning("======= HTTP GET STARTED =======")
-        logHeaders(self.headers)
+        log_headers(self.headers)
         http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-    def do_POST(self):
+    def do_post(self):
         logging.warning("======= HTTP POST STARTED =======")
         
-        logHeaders(self.headers)
+        log_headers(self.headers)
 
         form = cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
-            environ={'REQUEST_METHOD':'POST',
-                     'CONTENT_TYPE':self.headers['Content-Type'],
+            environ={'REQUEST_METHOD': 'POST',
+                     'CONTENT_TYPE': self.headers['Content-Type'],
                      })
         
-        logValues(form)
+        log_values(form)
 
         http.server.SimpleHTTPRequestHandler.do_GET(self)
 

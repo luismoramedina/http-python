@@ -1,27 +1,23 @@
 #!/usr/bin/python
 
 import datetime
-import urllib
-import urllib.request
 import http.server
 import socketserver
-import logging
-import cgi
+import urllib
+import urllib.request
 from random import randint
-
-import sys
 
 PORT = 8000
 SERVER1 = 'http://localhost:8080'
 SERVER2 = 'http://localhost:8686'
 
+
 class ForwardBalancerHandler(http.server.SimpleHTTPRequestHandler):
 
-    def do_GET(self):
+    def do_get(self):
 
-        rand = randint(0,9)
+        rand = randint(0, 9)
 
-        new_path = ''
         if rand % 2 == 0:
             new_path = SERVER1 + self.path
         else:
@@ -29,7 +25,7 @@ class ForwardBalancerHandler(http.server.SimpleHTTPRequestHandler):
 
         req = urllib.request.Request(new_path, None, self.headers)
 
-        print ('Before contact to server: ' + new_path + ' ' + str(datetime.datetime.now()))
+        print('Before contact to server: ' + new_path + ' ' + str(datetime.datetime.now()))
         response = urllib.request.urlopen(req)
         the_page = response.read()
         resp_headers = response.info()
@@ -46,6 +42,6 @@ Handler = ForwardBalancerHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
-print ("Listening on", PORT)
+print("Listening on", PORT)
 
 httpd.serve_forever()
