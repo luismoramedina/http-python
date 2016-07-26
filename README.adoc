@@ -1,0 +1,9 @@
+= http-python
+
+http server python scripts
+
+== Run with
+
+Python 3.x
+
+example: python3.5 httpserver.py

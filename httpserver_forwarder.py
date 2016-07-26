@@ -90,6 +90,5 @@ Handler = ServerHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
-print ("Listening on %s", PORT)
-
+print ("Listening on", PORT)
 httpd.serve_forever()

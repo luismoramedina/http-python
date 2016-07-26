@@ -70,5 +70,5 @@ Handler = ServerHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
-print("Serving at... " + PORT)
+print("Serving at...", PORT)
 httpd.serve_forever()
